@@ -1,27 +1,30 @@
 # DockerAngular
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.2.8.
+## Steps
 
-## Development server
+docker pull nginx:alpine
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+docker run -d -p 80:80 nginx:alpine
 
-## Code scaffolding
+ng build prod
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+docker run -d -p 80:80 -v D:/proyectos/ANGULAR/Ejemplo_NGINX/docker-angular/dist/dockerangular:/usr/share/nginx/html nginx:alpine
 
-## Build
+# construir imagen
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+docker build . -t docker-angular:latest
 
-## Running unit tests
+# levantar en nginx la imagen construida
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+docker run -d -p 80:80 docker-angular:latest
 
-## Running end-to-end tests
+# Param manejar rutas en nginx crer el archivo nginx-custom.conf y agregar:
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+server{
+listen 80;
+location / {
+root /usr/share/nginx/html;
+index index.html index.htm;
+try_files $uri $uri/ /index.html =404;
+}
+}
